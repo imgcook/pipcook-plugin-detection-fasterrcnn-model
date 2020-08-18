@@ -26,9 +26,10 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   } = args;
 
   let cfg: any;
+  let log: any;
 
   if (recoverPath) {
-    const log = JSON.parse(fs.readFileSync(path.join(recoverPath, '..', 'metadata.json'), 'utf8'));
+    log = JSON.parse(fs.readFileSync(path.join(recoverPath, '..', 'metadata.json'), 'utf8'));
     const labelMap = JSON.parse(log.output.dataset).labelMap;
     numClasses = Object.keys(labelMap).length;
   } else {
@@ -75,14 +76,17 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
       const predictor = DefaultPredictor(this.config);
       const img = cv2.imread(inputData.data);
       const out = predictor(img);
-      const ins = out['instances'].to(torch.device('cpu'));
-      const boxes = ins.pred_boxes.tensor.numpy();
-      const scores = ins.scores.numpy();
-      const classes = ins.pred_classes.numpy();
+      const ins = out['instances'].to(torch.device('cpu'));    
+      const scores = Array.from(ins.scores.numpy().tolist());
+      const classes = Array.from(ins.pred_classes.numpy().tolist());
+      let boxes = Array.from(ins.pred_boxes.tensor.numpy().tolist());
+      boxes = boxes.map((box: any) => Array.from(box));
+      const labels = classes.map((ele: number) => JSON.parse(log.output.dataset).labelArray[ele]);
       return {
-        boxes: boxes.toString(),
-        scores: scores.toString(),
-        classes: classes.toString()
+        boxes,
+        scores,
+        classes,
+        labels
       };
     }
   };
