@@ -29,7 +29,7 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   let log: any;
 
   if (recoverPath) {
-    log = JSON.parse(fs.readFileSync(path.join(recoverPath, '..', 'metadata.json'), 'utf8'));
+    log = await fs.readJSON(path.join(recoverPath, '..', 'metadata.json'))
     const labelMap = JSON.parse(log.output.dataset).labelMap;
     numClasses = Object.keys(labelMap).length;
   } else {
