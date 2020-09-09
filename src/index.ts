@@ -21,6 +21,7 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
     baseLearningRate = 0.00025,
     numWorkers = 0,
     numGpus = 2,
+    batchSize = 32,
     numClasses = 0,
     recoverPath
   } = args;
@@ -66,7 +67,7 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
     cfg.MODEL.DEVICE = 'cpu';
   }
 
-  cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128;
+  cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = batchSize;
   cfg.MODEL.ROI_HEADS.NUM_CLASSES = numClasses;
 
   const pipcookModel: UniModel = {
