@@ -56,7 +56,7 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   if (recoverPath) {
     cfg.MODEL.WEIGHTS = path.join(recoverPath, 'model_final.pth');
   } else {
-    cfg.MODEL.WEIGHTS = "detectron2://ImageNetPretrained/MSRA/R-50.pkl";
+    cfg.MODEL.WEIGHTS = MODEL_PATH;
   }
 
   cfg.SOLVER.IMS_PER_BATCH = 4;
